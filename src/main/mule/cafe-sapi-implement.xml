@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="cafe-sapi-implementFlow-createRecord" doc:id="8f8fd637-6f48-44c6-b2e0-f5abcce5d648" >
+		<logger level="INFO" doc:name="Logger" doc:id="9bbfc077-e2f0-44af-8029-dd3c857e228a" message="records are creating into database"/>
+		<db:insert doc:id="a7546966-1138-44ca-92ad-3ff98cd9e3ad" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO sql12732619.customers (CustomerId, LastName, FirstName, Address, City, PhoneNumber)
+VALUES (:CustomerId, :LastName, :FirstName, :Address, :City, :PhoneNumber);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"CustomerId": payload.custimerId,
+	"LastName": payload.lastName,
+	"FirstName": payload.firstName,
+	"Address": payload.address,
+	"City": payload.city,
+	"PhoneNumber": payload.phoneNumber
+}]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="a9699e94-2f57-476f-907f-ffb6789d8278" message="records are created into database"/>
+	</flow>
+	<flow name="cafe-sapi-implementFlow-getRecords" doc:id="8ce09836-eb1c-41c1-aef8-82c2adb74996" >
+		<logger level="INFO" doc:name="Logger" doc:id="d4f08d3c-bdb2-4bc7-b3f9-6e2480e59799" message="fetching data from customer records"/>
+		<db:select doc:name="Select" doc:id="441a5196-9750-4823-9604-7ef86750b9c2" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM sql12732619.customers  where PhoneNumber=:PhoneNumber]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"PhoneNumber": attributes.queryParams.phoneNumber
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="34be23f2-717a-41a4-84fb-ee0b0070046c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2197d4c7-9804-4a03-9ab5-96fae9101d78" message="get records flow ended"/>
+	</flow>
+	<flow name="cafe-sapi-implementFlow-updateRecord" doc:id="7a38d31a-6073-46ed-8a4e-87e510faff72" >
+		<logger level="INFO" doc:name="Logger" doc:id="a14e27c5-9de8-41d7-b91d-cc2f41d27067" message="records update flow started"/>
+		<db:update doc:name="Update" doc:id="f0f8cfd2-200e-4e5e-a5e9-104bb5e43241" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE sql12732619.customers
+SET LastName = :LastName, FirstName= :FirstName, Address= :Address, City= :City,  PhoneNumber= :PhoneNumber
+WHERE CustomerId= :CustomerId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"CustomerId": payload.custimerId,
+	"LastName": payload.lastName,
+	"FirstName": payload.firstName,
+	"Address": payload.address,
+	"City": payload.city,
+	"PhoneNumber": payload.phoneNumber
+}]]]></db:input-parameters>
+		</db:update>
+		<logger level="INFO" doc:name="Logger" doc:id="6307cbdd-8fed-4539-968d-1b5887a7605a" message="update records flow ended"/>
+	</flow>
+</mule>

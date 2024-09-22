@@ -1,0 +1,11 @@
+db: 
+  host: "sql12.freesqldatabase.com"
+  userName: "sql12732619"
+  password: "rTEgXKHEsI"
+  port: "3306"
+  
+  
+http:
+  host: "localhost"
+  port: "8081"
+  path: "/api/*"

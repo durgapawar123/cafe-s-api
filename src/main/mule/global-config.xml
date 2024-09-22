@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="91603dc7-fd6c-4f6c-9917-5c9cf561b9a2" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.userName}" password="${db.password}" />
+	</db:config>
+	<http:listener-config name="cafe-s-api-httpListenerConfig-latest">
+        <http:listener-connection host="0.0.0.0" port="8081"/>
+    </http:listener-config>
+     <apikit:config name="cafe-s-api-config" api="cafe-s-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<configuration-properties doc:name="Configuration properties" doc:id="4962ca51-16d5-45e6-bcc7-1b546068ece7" file="config\cafe-sapi-DEV.yaml" />
+	<global-property doc:name="Global Property" doc:id="131ee269-4bc5-4e1e-8ede-5fdaf2c1b9e0" name="env" value="LOCAL" />
+    
+</mule>
